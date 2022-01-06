@@ -21,6 +21,29 @@ def sudoku():
 
     root.configure(bg="black")
 
+    def clean():
+        for i in range(9):
+            for j in range(9):
+                ent[i][j].delete(0, "end")
+                ent[i][j].insert(0, "")
+
+    def tmp():
+        for y in range(9):
+            grid.append([])
+            for x in range(9):
+                if ent[y][x].get() == "":
+                    z = 0
+                elif "0" <= ent[y][x].get() <= "9":
+                    z = int(ent[y][x].get())
+                else:
+                    exits()
+                grid[y].append(z)
+        for y in range(9):
+            for x in grid[y]:
+                if x < 0 or x > 9:
+                    exits()
+        solve()
+
     for i in range(11):
         ent.append([])
         for j in range(9):
@@ -70,24 +93,6 @@ def sudoku():
     btn_reset.grid(row=10, column=7, columnspan=2)
 
     root.mainloop()
-
-
-def tmp():
-    for y in range(9):
-        grid.append([])
-        for x in range(9):
-            if ent[y][x].get() == "":
-                z = 0
-            elif "0" <= ent[y][x].get() <= "9":
-                z = int(ent[y][x].get())
-            else:
-                exits()
-            grid[y].append(z)
-    for y in range(9):
-        for x in grid[y]:
-            if x < 0 or x > 9:
-                os.execl(sys.executable, sys.executable, *sys.argv)
-    solve()
 
 
 def solve():
