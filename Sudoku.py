@@ -5,7 +5,7 @@ import os
 
 grid = []
 ent = []
-i = 0
+k = 0
 
 
 def main():
@@ -17,17 +17,21 @@ def exits():
 
 
 def sudoku():
+    global i
     root = tk.Tk()
 
     root.configure(bg="black")
 
     def clean():
+        global k
         for i in range(9):
             for j in range(9):
                 ent[i][j].delete(0, "end")
                 ent[i][j].insert(0, "")
+        k = 0
 
     def tmp():
+        grid.clear()
         for y in range(9):
             grid.append([])
             for x in range(9):
@@ -36,12 +40,16 @@ def sudoku():
                 elif "0" <= ent[y][x].get() <= "9":
                     z = int(ent[y][x].get())
                 else:
-                    exits()
+                    clean()
+                    return
                 grid[y].append(z)
         for y in range(9):
             for x in grid[y]:
+                print(x)
                 if x < 0 or x > 9:
-                    exits()
+                    clean()
+                    print("clean2")
+                    return
         solve()
 
     for i in range(11):
@@ -89,7 +97,7 @@ def sudoku():
 
     # button_reset
     btn_reset = tk.Button(text="Reset", height=1, width=9, cursor="dot", pady=9, bd=5, font=("Arial", 15),
-                          command=exits)
+                          command=clean)
     btn_reset.grid(row=10, column=7, columnspan=2)
 
     root.mainloop()
@@ -97,8 +105,9 @@ def sudoku():
 
 def solve():
     global grid
-    global i
-    if i == 0:
+    global k
+    print(k)
+    if k == 0:
         for y in range(9):
             for x in range(9):
                 if grid[y][x] == 0:
@@ -109,7 +118,7 @@ def solve():
                             grid[y][x] = 0
                     return True
         display()
-        i += 1
+        k += 1
 
 
 def possible(y, x, n):
