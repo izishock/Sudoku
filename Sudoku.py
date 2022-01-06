@@ -12,10 +12,6 @@ def main():
     sudoku()
 
 
-def exits():
-    os.execl(sys.executable, sys.executable, *sys.argv)
-
-
 def sudoku():
     global i
     root = tk.Tk()
@@ -45,12 +41,68 @@ def sudoku():
                 grid[y].append(z)
         for y in range(9):
             for x in grid[y]:
-                print(x)
                 if x < 0 or x > 9:
                     clean()
-                    print("clean2")
                     return
         solve()
+
+    def solve():
+        global grid
+        global k
+        if not original_possible():
+            clean()
+            return
+        if k == 0:
+            for y in range(9):
+                for x in range(9):
+                    if grid[y][x] == 0:
+                        for n in range(1, 10):
+                            if possible(y, x, n):
+                                grid[y][x] = n
+                                solve()
+                                grid[y][x] = 0
+                        return True
+            display()
+            k += 1
+
+    def original_possible():
+        global grid
+        for n in range(9):
+            for y in range(9):
+                for x in range(y + 1, 9):
+                    if grid[n][y] == grid[n][x] != 0:
+                        return False
+                    if grid[y][n] == grid[x][n] != 0:
+                        return False
+        for y in range(9):
+            for x in range(9):
+                for i in range(3):
+                    for j in range(3):
+                        y0 = (y // 3)*3
+                        x0 = (x // 3)*3
+                        if grid[y][x] == grid[y0 + i][x0 + j] != 0 and y != y0 + i and x0 != x0 + j:
+                            return False
+        return True
+
+    def possible(y, x, n):
+        global grid
+        for i in range(9):
+            if grid[y][i] == n or grid[i][x] == n:
+                return False
+        x0 = (x // 3) * 3
+        y0 = (y // 3) * 3
+        for i in range(3):
+            for j in range(3):
+                if grid[i + y0][j + x0] == n:
+                    return False
+        return True
+
+    def display():
+        global grid
+        for y in range(9):
+            for x in range(9):
+                if ent[y][x].get() == "":
+                    ent[y][x].insert(0, str(grid[y][x]))
 
     for i in range(11):
         ent.append([])
@@ -101,46 +153,6 @@ def sudoku():
     btn_reset.grid(row=10, column=7, columnspan=2)
 
     root.mainloop()
-
-
-def solve():
-    global grid
-    global k
-    print(k)
-    if k == 0:
-        for y in range(9):
-            for x in range(9):
-                if grid[y][x] == 0:
-                    for n in range(1, 10):
-                        if possible(y, x, n):
-                            grid[y][x] = n
-                            solve()
-                            grid[y][x] = 0
-                    return True
-        display()
-        k += 1
-
-
-def possible(y, x, n):
-    global grid
-    for i in range(9):
-        if grid[y][i] == n or grid[i][x] == n:
-            return False
-    x0 = (x // 3) * 3
-    y0 = (y // 3) * 3
-    for i in range(3):
-        for j in range(3):
-            if grid[i + y0][j + x0] == n:
-                return False
-    return True
-
-
-def display():
-    global grid
-    for y in range(9):
-        for x in range(9):
-            if ent[y][x].get() == "":
-                ent[y][x].insert(0, str(grid[y][x]))
 
 
 if __name__ == "__main__":
